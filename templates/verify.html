@@ -1,0 +1,126 @@
+{% extends '_layout/index.html' %}
+{% block title %}加群验证服务{% endblock %}
+{% block content %}
+<div class="container px-4 py-3">
+  <div class="row justify-content-center my-3">
+    <div class="col-md-8 col-lg-6">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title">XMUT<sup>plus</sup>加群验证服务</h5>
+          <p class="card-subtitle mb-2 bg-success text-light p-1">
+            您仅需提供 :)
+            <ol>
+                <li>您的姓名</li>
+                <li>您的学号</li>
+            </ol>
+            即可
+          </p>
+          <p class="card-subtitle mb-2 bg-warning text-light p-1">
+            认证过程如下
+            <ul>
+                <li>在您通过姓名+学号认证后，系统会为您派发一个Token</li>
+                <li>此Token仅用于机器人和群聊之间通信，<b>为了方便您多次使用本服务，我们可能会将一些信息保存在您的浏览器中。您可以随时清除这些数据。</b></li>
+                <li>之后，您将Token填入对应的QQ群认证即可</li>
+            </ul>
+        </ul>
+          </p>
+            <form action="/verify/qq" method="post">
+                {% csrf_token %}
+                <div class="mb-3">
+                  <label for="stuName" class="form-label">姓名</label>
+                  <input type="text" class="form-control" id="stuName" placeholder="请输入姓名">
+                </div>
+                <div class="mb-3">
+                  <label for="stuId" class="form-label">学号</label>
+                  <input type="text" class="form-control" id="stuId" placeholder="请输入学号">
+                </div>
+                <button type="button" class="btn btn-primary" id="submitBtn">登录</button>
+            </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row justify-content-center my-3">
+    <div class="col-md-8 col-lg-6">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title">遇到问题？</h5>
+          <p class="card-text">
+            <ul>
+              <li>如遇登陆问题请联系，QQ:378768535</li>
+              <li>如您挖掘到本系统漏洞，请编写漏洞报告并反馈至 security@icecliffs.cn</li>
+            </ul>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast-container position-fixed bottom-0 top-0 end-0 p-3">
+  <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="toast-header">
+      <strong class="me-auto">系统提示</strong>
+      <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+    </div>
+    <div class="toast-body">
+      <p id="sys_message"></p>
+    </div>
+  </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+<script src="https://www.w3schools.cn/lib/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery.cookie@1.4.1/jquery.cookie.min.js"></script>
+<script type="text/javascript">
+var sys_message = document.getElementById('sys_message');
+const toastLiveExample = document.getElementById('liveToast')
+const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toastLiveExample)
+$(document).ready(function() {
+  $.ajaxSetup({
+    beforeSend: function(xhr, settings) {
+      xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+    }
+  });
+  $("#submitBtn").click(function() {
+    var stuName = $("#stuName").val();
+    var stuId = $("#stuId").val();
+    var formData = {
+      student_name: stuName,
+      student_id: stuId
+    };
+    $.ajax({
+      type: "POST",
+      url: "/verify/authorizes",
+      data: formData,
+      success: function(response) {
+        if (response.status == true) {
+          sys_message.innerHTML = response.message;
+          toastBootstrap.show();
+          setTimeout(function() {
+            window.location.href = '/verify/qq';
+        }, 3000);
+        }else{
+          sys_message.innerHTML = response.message;
+          toastBootstrap.show();
+        }
+      },
+    });
+  });
+});
+function getCookie(name) {
+  var cookieValue = null;
+  if (document.cookie && document.cookie !== '') {
+    var cookies = document.cookie.split(';');
+    for (var i = 0; i < cookies.length; i++) {
+      var cookie = cookies[i].trim();
+      if (cookie.substring(0, name.length + 1) === (name + '=')) {
+        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+        break;
+      }
+    }
+  }
+  return cookieValue;
+}
+</script>
+{% endblock %}

@@ -1,0 +1,18 @@
+{% extends '_layout/index.html' %}
+{% block title %}校历{% endblock %}
+{% load static %}
+{% block content %}
+<div class="container px-4 py-3">
+  <div class="row">
+    <div class="col-md-6">
+        <img src="{% static 'img/essay0001-1.jpg' %}" class="img-fluid" alt="...">
+    </div>
+    <div class="col-md-6">
+        <img src="{% static 'img/essay0001-2.jpg' %}" class="img-fluid" alt="...">
+    </div>
+  </div>
+    <a>请以：<a href="{{ xiaobao }}" style="text-decoration: none; color: black" target="_blank">
+    <abbr title="校报" class="initialism">{{ xiaobao }}</abbr>
+    </a>，为准 <span class="badge text-bg-danger">实时更新</span></a>
+</div>
+{% endblock %}

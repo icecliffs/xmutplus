@@ -1,0 +1,7 @@
+requests
+bs4
+fakeua
+pycryptodome
+uuid
+base58
+django

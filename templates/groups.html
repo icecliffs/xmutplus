@@ -1,0 +1,79 @@
+{% extends '_layout/index.html' %}
+{% block title %}QQ群索引{% endblock %}
+{% block content %}
+<div class="container px-4 py-3">
+        <div class="alert alert-warning" role="alert">
+          XMUT<sup>plus</sup>对以下 QQ 群的群成员组成、聊天内容不作保证。 在群聊中，请保护好个人隐私，不要轻易相信陌生人，谨防上当受骗。
+        </div>
+        <div class="alert alert-success" role="alert">
+            <p>如需添加新群，请提供：</p>
+            <ul>
+                <li>群名称：XXX新生群</li>
+                <li>群号：1xxxxxxx0</li>
+                <li>备注（可选）：XXXX</li>
+            </ul>
+            <p>并将内容发至 QQ: 378768535</p>
+        </div>
+        <p>更多请翻阅免责声明，<a href="/disclaimer">XMUT<sup>plus</sup>免责声明</a></p>
+        <h4>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+              <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+            </svg>
+            群聊搜索
+        </h4>
+        <div class="px-2 py-2 col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search">
+          <input type="search" class="form-control" id="search-btn" placeholder="猜您想搜：信息安全协会..." aria-label="Search">
+        </div>
+        <div class="px-1 py-1">
+            {% for groups in groups %}
+            <h4 class="pb-2 border-bottom">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"  fill="currentColor" class="bi bi-people" viewBox="0 0 16 16">
+                  <path d="M15 14s1 0 1-1-1-4-5-4-5 3-5 4 1 1 1 1h8Zm-7.978-1A.261.261 0 0 1 7 12.996c.001-.264.167-1.03.76-1.72C8.312 10.629 9.282 10 11 10c1.717 0 2.687.63 3.24 1.276.593.69.758 1.457.76 1.72l-.008.002a.274.274 0 0 1-.014.002H7.022ZM11 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm3-2a3 3 0 1 1-6 0 3 3 0 0 1 6 0ZM6.936 9.28a5.88 5.88 0 0 0-1.23-.247A7.35 7.35 0 0 0 5 9c-4 0-5 3-5 4 0 .667.333 1 1 1h4.216A2.238 2.238 0 0 1 5 13c0-1.01.377-2.042 1.09-2.904.243-.294.526-.569.846-.816ZM4.92 10A5.493 5.493 0 0 0 4 13H1c0-.26.164-1.03.76-1.724.545-.636 1.492-1.256 3.16-1.275ZM1.5 5.5a3 3 0 1 1 6 0 3 3 0 0 1-6 0Zm3-2a2 2 0 1 0 0 4 2 2 0 0 0 0-4Z"/>
+                </svg>
+                {{ groups.name }}
+            </h4>
+            <div class="container" id="hanging-icons">
+                <div class="row row-cols-lg-3">
+                {% for group in groups.groups %}
+                    <div class="col mb-4">
+                        <div class="card shadow-sm">
+                            <h5 class="card-header">{{ group.name }}</h5>
+                              <div class="card-body">
+                                <h5 class="card-title" style="width: 10000px">{{ group.notes }}</h5>
+                                <p class="card-text">群号：{{ group.group_id }}</p>
+                              <a type="button" onclick="copy(this,{{ group.group_id }})" class="btn btn-outline-success">复制</a>
+                            {% if group.flag == "1" %}
+                                  <small class="text-muted">
+                                     本群启用了
+                                    <a href="/verify">机器人自助验证</a>
+                                  </small>
+                            {% endif %}
+                              </div>
+                        </div>
+                    </div>
+                {% endfor %}
+                </div>
+            </div>
+        {% endfor %}
+        </div>
+    </div>
+<script>
+$(document).ready(function() {
+  const $searchInput = $('#search-btn');
+  const $cardHeaders = $('.card-header');
+  $searchInput.on('keyup', function() {
+    const searchText = $searchInput.val().toLowerCase();
+    $cardHeaders.each(function() {
+      const $cardHeader = $(this);
+      const text = $cardHeader.text().toLowerCase();
+      const $card = $cardHeader.closest('.card');
+      if (text.includes(searchText)) {
+        $card.show();
+      } else {
+        $card.hide();
+      }
+    });
+  });
+});
+</script>
+{% endblock %}
